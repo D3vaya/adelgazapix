@@ -23,7 +23,7 @@ export function getRatelimit(): Ratelimit | null {
     /** 20 image uploads per minute per IP, sliding window. */
     limiter: Ratelimit.slidingWindow(20, "1 m"),
     analytics: true,
-    prefix: "pixel-gym",
+    prefix: "adelgazapix",
   });
   return cached;
 }

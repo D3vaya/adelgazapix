@@ -10,7 +10,7 @@ const AUTH_PASS = process.env.ACCESS_PASS;
 
 /**
  * Comma-separated list of allowed origins. Example:
- *   ALLOWED_ORIGIN=https://pixel-gym.vercel.app,http://localhost:3000
+ *   ALLOWED_ORIGIN=https://adelgazapix.vercel.app,http://localhost:3000
  * If unset, the origin check is skipped.
  */
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN ?? "")
@@ -18,7 +18,7 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN ?? "")
   .map((s) => s.trim())
   .filter(Boolean);
 
-const REALM = "Pixel Gym";
+const REALM = "Adelgazapix";
 
 export const config = {
   /**

@@ -1,8 +1,8 @@
-# Pixel Gym
+# Adelgazapix
 
 > Tus PNG entran gordos y salen fit. Sharp + WebP, sin sudar — cardio para imágenes, deploy para ti.
 
-![Pixel Gym screenshot](./docs/screenshot.png)
+![Adelgazapix screenshot](./docs/screenshot.png)
 
 App liviana para que un equipo (o tú mismo) suba imágenes desde el navegador, las procese con **Sharp** en el servidor y descargue WebP optimizado: una a una o todo en un ZIP.
 
@@ -27,8 +27,8 @@ Construido con Next.js 16 (App Router) + React 19 + Sharp 0.33 + Tailwind 3 + Ty
 ## Arranque rápido
 
 ```bash
-git clone https://github.com/D3vaya/pixel-gym.git
-cd pixel-gym
+git clone https://github.com/D3vaya/adelgazapix.git
+cd adelgazapix
 npm install
 npm run dev
 # → http://localhost:3000
@@ -57,7 +57,7 @@ Después de cualquier cambio, reinicia `npm run dev`.
 ```ts
 brand: {
   name: "<D3vAya/>",                 // wordmark del header (si lleva <…/> se estiliza como código)
-  product: "Pixel Gym",              // título grande
+  product: "Adelgazapix",            // título grande
   productHref: "https://github.com/...",  // opcional: el título lleva al repo
   tagline: "...",                    // descripción debajo del título
   badge: "side project",             // chip en la esquina superior derecha
@@ -180,7 +180,7 @@ ACCESS_USER=admin
 ACCESS_PASS=replace-with-a-strong-password
 
 # Anti-hotlinking: solo aceptar POSTs desde estos dominios (comma-separated)
-ALLOWED_ORIGIN=https://pixel-gym.vercel.app,http://localhost:3000
+ALLOWED_ORIGIN=https://adelgazapix.vercel.app,http://localhost:3000
 
 # Rate limit persistente por IP (20 req/min, sliding window)
 # Free tier en https://upstash.com

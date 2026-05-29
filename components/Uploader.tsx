@@ -378,7 +378,7 @@ export function Uploader() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${branding.brand.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-webp.zip`;
+      a.download = `${branding.brand.product.toLowerCase().replace(/[^a-z0-9]/g, "-")}-webp.zip`;
       document.body.appendChild(a);
       a.click();
       a.remove();

@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: `${branding.brand.name} · ${branding.brand.product}`,
   description: branding.brand.tagline,
   robots: { index: false, follow: false },
+  appleWebApp: {
+    title: branding.brand.product.toLowerCase(),
+  },
 };
 
 export const viewport: Viewport = {
