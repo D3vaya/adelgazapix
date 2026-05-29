@@ -9,15 +9,36 @@ const AUTH_USER = process.env.ACCESS_USER;
 const AUTH_PASS = process.env.ACCESS_PASS;
 
 /**
- * Comma-separated list of allowed origins. Example:
+ * Origin allowlist. Comma-separated list in ALLOWED_ORIGIN env var.
+ * Example:
  *   ALLOWED_ORIGIN=https://adelgazapix.vercel.app,http://localhost:3000
- * If unset, the origin check is skipped.
+ *
+ * When the proxy runs on Vercel, the deployment's own URLs are added
+ * automatically — no need to track preview URLs by hand:
+ *   - VERCEL_URL                     (current deployment, e.g. adelgazapix-abc123.vercel.app)
+ *   - VERCEL_PROJECT_PRODUCTION_URL  (production alias, e.g. adelgazapix.vercel.app)
+ *   - VERCEL_BRANCH_URL              (branch URL)
+ *
+ * In dev (NODE_ENV !== "production"), any `http://localhost:*` is allowed.
+ * If ALLOWED_ORIGIN is unset, the Origin check is disabled entirely.
  */
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGIN ?? "")
+const EXPLICIT_ORIGINS = (process.env.ALLOWED_ORIGIN ?? "")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
 
+const VERCEL_ORIGINS = [
+  process.env.VERCEL_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_BRANCH_URL,
+]
+  .filter((u): u is string => Boolean(u))
+  .map((u) => `https://${u}`);
+
+const ALLOWED_ORIGINS =
+  EXPLICIT_ORIGINS.length > 0 ? [...EXPLICIT_ORIGINS, ...VERCEL_ORIGINS] : [];
+
+const IS_DEV = process.env.NODE_ENV !== "production";
 const REALM = "Adelgazapix";
 
 export const config = {
@@ -30,6 +51,7 @@ export const config = {
 
 function isAllowedOrigin(source: string): boolean {
   if (!source) return false;
+  if (IS_DEV && /^http:\/\/localhost(:\d+)?(\/|$)/.test(source)) return true;
   return ALLOWED_ORIGINS.some((allowed) => source.startsWith(allowed));
 }
 
