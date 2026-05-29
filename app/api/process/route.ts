@@ -4,7 +4,12 @@ import { branding } from "@/branding.config";
 import { getClientIp, getRatelimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
-export const maxDuration = 30;
+/**
+ * Sharp WebP at effort 6 on a 12 MB image can take 30–60+s.
+ * 90s gives margin for blob fetch + decode + slow-encode + cleanup,
+ * without letting truly stuck requests linger.
+ */
+export const maxDuration = 90;
 export const dynamic = "force-dynamic";
 
 const {

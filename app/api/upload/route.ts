@@ -5,6 +5,9 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 export const dynamic = "force-dynamic";
 
+// 30s is enough — this only mints a short-lived token, the actual upload
+// goes browser→Blob directly.
+
 /**
  * Generates a short-lived, restricted token that the browser uses to upload
  * directly to Vercel Blob storage. Bypasses the 4.5 MB function payload limit.
