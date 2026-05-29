@@ -13,7 +13,7 @@ export const branding = {
     name: "<D3vAya/>",
     product: "Pixel Gym",
     /** Optional: makes the product title in the header clickable (opens in new tab). */
-    productHref: "https://github.com/jcayala/pixel-gym",
+    productHref: "https://github.com/D3vaya/pixel-gym",
     tagline:
       "Tus PNG entran gordos y salen fit. Sharp + WebP, sin sudar — cardio para imágenes, deploy para ti.",
     badge: "side project",

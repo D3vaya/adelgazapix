@@ -25,7 +25,7 @@ Construido con Next.js 16 (App Router) + React 19 + Sharp 0.33 + Tailwind 3 + Ty
 ## Arranque rápido
 
 ```bash
-git clone https://github.com/jcayala/pixel-gym.git
+git clone https://github.com/D3vaya/pixel-gym.git
 cd pixel-gym
 npm install
 npm run dev
