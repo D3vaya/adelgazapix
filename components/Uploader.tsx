@@ -56,10 +56,20 @@ type UploadResult = {
   webpBytes: number;
 };
 
-function uploadFile(
+type ProgressFn = (pct: number) => void;
+type PhaseFn = (phase: "uploading" | "processing") => void;
+
+/**
+ * Vercel rejects function bodies > 4.5 MB at the platform layer. Files above
+ * this threshold get uploaded directly to Vercel Blob first, then we hand the
+ * blob URL to /api/process.
+ */
+const BLOB_THRESHOLD = 4 * 1024 * 1024;
+
+function uploadDirect(
   file: File,
-  onProgress: (pct: number) => void,
-  onPhase: (phase: "uploading" | "processing") => void,
+  onProgress: ProgressFn,
+  onPhase: PhaseFn,
   signal: AbortSignal,
 ): Promise<UploadResult> {
   return new Promise((resolve, reject) => {
@@ -114,6 +124,64 @@ function uploadFile(
     xhr.open("POST", "/api/process");
     xhr.send(fd);
   });
+}
+
+async function uploadViaBlob(
+  file: File,
+  onProgress: ProgressFn,
+  onPhase: PhaseFn,
+  signal: AbortSignal,
+): Promise<UploadResult> {
+  const { upload } = await import("@vercel/blob/client");
+  const blob = await upload(file.name, file, {
+    access: "public",
+    handleUploadUrl: "/api/upload",
+    abortSignal: signal,
+    onUploadProgress: ({ percentage }) => onProgress(percentage),
+  });
+  onProgress(100);
+  onPhase("processing");
+
+  const res = await fetch("/api/process", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ blobUrl: blob.url }),
+    signal,
+  });
+
+  if (!res.ok) {
+    let message = `HTTP ${res.status}`;
+    try {
+      const j = await res.json();
+      if (j?.error?.message) message = j.error.message;
+    } catch {}
+    throw new Error(message);
+  }
+
+  const webp = await res.blob();
+  const original = Number(res.headers.get("X-Original-Bytes")) || file.size;
+  const webpBytes = Number(res.headers.get("X-Webp-Bytes")) || webp.size;
+  return { webp, originalBytes: original, webpBytes };
+}
+
+async function uploadFile(
+  file: File,
+  onProgress: ProgressFn,
+  onPhase: PhaseFn,
+  signal: AbortSignal,
+): Promise<UploadResult> {
+  if (file.size > BLOB_THRESHOLD) {
+    try {
+      return await uploadViaBlob(file, onProgress, onPhase, signal);
+    } catch (err) {
+      if (signal.aborted) throw err;
+      const msg = err instanceof Error ? err.message : String(err);
+      // Fall back to direct only when Blob isn't configured on the server.
+      // Works in local dev where Vercel's platform limit doesn't exist.
+      if (!/BLOB_NOT_CONFIGURED|503/i.test(msg)) throw err;
+    }
+  }
+  return uploadDirect(file, onProgress, onPhase, signal);
 }
 
 export function Uploader() {

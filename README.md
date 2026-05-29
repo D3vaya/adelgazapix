@@ -186,7 +186,15 @@ ALLOWED_ORIGIN=https://pixel-gym.vercel.app,http://localhost:3000
 # Free tier en https://upstash.com
 UPSTASH_REDIS_REST_URL=https://xxx.upstash.io
 UPSTASH_REDIS_REST_TOKEN=AYTk...
+
+# REQUERIDO para archivos > 4 MB en Vercel (saltarse el body limit)
+# Habilitalo en Project → Storage → Blob → Create Store, luego `vercel env pull`
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
+
+**Sobre el límite de 4.5 MB de Vercel**: las Vercel Functions rechazan cualquier body > 4.5 MB con `FUNCTION_PAYLOAD_TOO_LARGE`. Cuando `BLOB_READ_WRITE_TOKEN` está activo, el cliente **sube los archivos > 4 MB directamente a Vercel Blob** (saltándose la función) y luego le pasa la URL a `/api/process`. El servidor descarga, comprime con Sharp, borra la blob y devuelve el WebP.
+
+Sin Blob configurado, los archivos > 4 MB devolverán un error claro en producción. En local todo sigue funcionando hasta `maxFileBytes` (25 MB por defecto).
 
 Cómo se enforzan:
 
