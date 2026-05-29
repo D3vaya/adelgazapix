@@ -8,7 +8,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "font-src 'self' data:",
-  `connect-src 'self' https://*.vercel-storage.com https://*.public.blob.vercel-storage.com${isDev ? " ws: http://localhost:*" : ""}`,
+  `connect-src 'self' https://vercel.com https://*.vercel-storage.com https://*.public.blob.vercel-storage.com${isDev ? " ws: http://localhost:*" : ""}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
